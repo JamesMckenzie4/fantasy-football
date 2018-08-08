@@ -1,6 +1,8 @@
 import requests
 import time
 
+from unidecode import unidecode
+
 
 def get_player_data():
     """Write player statistics to csv file"""
@@ -13,7 +15,7 @@ def get_player_data():
         write_file.write('{}\n'.format(','.join(headers)))
         for player in player_info:
             player_data = list(player.values())
-            player_data = [str(i) for i in player_data]
+            player_data = [unidecode(str(i)) for i in player_data]
             write_file.write('{}\n'.format(','.join(player_data)))
             
 def get_player_fixtures(n_players=489):
@@ -61,9 +63,9 @@ def get_team_data():
             
 def main():
     get_player_data()
-    get_player_fixtures()
-    get_player_types()
-    get_team_data()
+    #get_player_fixtures()
+    #get_player_types()
+    #get_team_data()
     
 if __name__ == "__main__":
     main()
