@@ -43,8 +43,10 @@ def get_odds_data(odds_table, is_over_under):
 
 def get_bookmakers(odds_table):
     bookmakers = []
-    print(odds_table)
-    table_headers = odds_table.find('tr', {'class': 'eventTableHeader'})
+    try:
+        table_headers = odds_table.find('tr', {'class': 'eventTableHeader'})
+    except AttributeError:
+        return None
     for td in table_headers.find_all('td'):
         try:
             bookmakers.append(td.a['title'])
@@ -56,7 +58,6 @@ def get_bookmakers(odds_table):
 
 
 def main():
-    # For now just get the following market data
     headers = {'User-Agent': 'Mozilla/5.0'}
     # Get the page, make the soup
     page = requests.get(BASE_URL + MATCHES_URL, headers=headers)
@@ -69,29 +70,34 @@ def main():
             team_1, team_2 = event_names['data-event-name'].split(' v ')
         else:
             continue
-        for market in ['total-goals-over-under', 'winner', 'correct-score', 'asian-handicap', 'both-teams-to-score']:
+        print('Fetching market data for {} vs {}'.format(team_1, team_2))
+        for market in MARKETS_LIST:
             # Check data dir exists. If not, create one.
             if not os.path.isdir('../../data/odds-data/'):
                 os.mkdir('../../data/odds-data/')
-            with open('../../data/odds-data/{}_{}_{}.csv'.format(team_1, team_2, market), 'w') as write_file:
+            file_name = '../../data/odds-data/{}_{}_{}.csv'.format(team_1, team_2, market)
+            if file_name in os.listdir('../../data/odds-data/'):
+                print('{} odds data already obtained for {} vs {}'.format(team_1, team_2, market))
+            with open(file_name, 'w') as write_file:
                 # Get odds
                 href = match.find_all('td', {'class': 'betting link-right'})[0].a['href']
+                href = href.replace('/winner', '')
                 # Get odds html - wait 5 seconds to avoid a IP ban from oddschecker
-                time.sleep(1)
+                time.sleep(0.5)
                 print('{}{}/{}'.format(BASE_URL, href, market))
-                """
                 odds_page = requests.get('{}{}/{}'.format(BASE_URL, href, market), headers=headers)
                 odds_soup = BeautifulSoup(odds_page.content, 'lxml')
-                print(odds_soup)
                 # Get the main odds table
-                odds_table = odds_soup.find('table', {'class': 'eventTable '})
+                odds_table = odds_soup.find('table', {'class': 'eventTable'})
                 # Get the bookmakers names list
                 bookmakers = get_bookmakers(odds_table)
+                write_file.write('{}\t{}\n'.format('bookmakers', bookmakers))
+                if not bookmakers:
+                    continue
                 # Get the odds dict
                 selection_to_odds_map = get_odds_data(odds_table, is_over_under=(market == 'total-goals-over-under'))
-                write_file.write('Selection,{}\n'.format(','.join(bookmakers)))
-                for selection, odds_data in selection_to_odds_map.items():
-                    write_file.write('{},{}\n'.format(selection, ','.join(odds_data)))"""
+                for selection, odds_map in selection_to_odds_map.items():
+                    write_file.write('{}\t{}\n'.format(selection, odds_map))
 
 
 if __name__ == '__main__':
