@@ -1,14 +1,14 @@
-from collections import Counter
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.offline as pyo
+
 
 def compare_player_fixture_difficulties(players=['Lukaku', 'Aguero', 'Zaha'], n_matches_per_player=5):
     """Create a staked bar chart showing the difficulty of the players next n matches"""
     
     # Get paths
     player_fixtures_path = '../../data/fantasy-premier-league-data/player-fixtures.csv'
-    players_path= '../../data/fantasy-premier-league-data/players.csv'
+    players_path = '../../data/fantasy-premier-league-data/players.csv'
     # Get Dataframes
     df_fixtures = pd.read_csv(player_fixtures_path)
     df_players = pd.read_csv(players_path, encoding='ISO-8859-1')
@@ -42,7 +42,7 @@ def compare_player_fixture_difficulties(players=['Lukaku', 'Aguero', 'Zaha'], n_
 
     fig = go.Figure(data=data, layout=layout)
     pyo.plot(fig)
-    
+
+
 if __name__ == '__main__':
     compare_player_fixture_difficulties()
-    
