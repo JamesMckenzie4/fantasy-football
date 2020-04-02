@@ -10,7 +10,7 @@ from understat import Understat
 async def main():
     async with aiohttp.ClientSession() as session:
         understat = Understat(session)
-        data = await understat.get_league_results(league_name='epl', season='2018')
+        data = await understat.get_league_results(league_name="epl", season="2018")
         return data
 
 
