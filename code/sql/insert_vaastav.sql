@@ -1,0 +1,1 @@
+INSERT INTO fantasy.game_weeks VALUES {} ON CONFLICT DO NOTHING

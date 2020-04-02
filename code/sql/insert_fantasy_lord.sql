@@ -1,0 +1,1 @@
+INSERT INTO fantasy.players_historic VALUES {} ON CONFLICT DO NOTHING
