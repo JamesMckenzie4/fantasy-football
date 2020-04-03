@@ -16,7 +16,7 @@ COLS = [
     "value",
     "minutes",
     "total_points",
-    'bonus',
+    "bonus",
     "bps",
     "goals_scored",
     "assists",
@@ -39,7 +39,7 @@ COLS = [
     "team_h_score",
     "team_a_score",
     "was_home",
-    "opponent_team"
+    "opponent_team",
 ]
 
 
@@ -55,15 +55,20 @@ def parse_vaastav():
         for game_week in os.listdir(os.path.join(DATA_PATH, year, "gws")):
             if not game_week.endswith("cleaned.csv"):
                 continue
-            print("Processing file - {}".format(os.path.join(DATA_PATH, 
-                year, "gws", game_week)))
+            print(
+                "Processing file - {}".format(
+                    os.path.join(DATA_PATH, year, "gws", game_week)
+                )
+            )
             df = pd.read_csv(
-                os.path.join(DATA_PATH, year, "gws", game_week), encoding="utf8")
+                os.path.join(DATA_PATH, year, "gws", game_week), encoding="utf8"
+            )
             df.dropna(inplace=True)
             # Remove accents from players names
             df["name"] = df.apply(lambda x: remove_accents(x["name"]), axis=1)
             # Remove player_id / element from the end players name
-            df["name"] = df.name.str.split('_').str[:-1].str.join(' ')
+            if year in ["2018-19", "2019-20"]:
+                df["name"] = df.name.str.split("_").str[:-1].str.join(" ")
             game_week_data = list(df[COLS].itertuples(index=False, name=None))
             data.extend(game_week_data)
 
