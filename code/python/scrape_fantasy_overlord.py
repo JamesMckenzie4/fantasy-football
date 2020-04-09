@@ -69,7 +69,7 @@ def scrape_fantasy_overlord(to_exclude=None):
 
     Parameters
     ----------
-    to_exclude : list)
+    to_exclude : list
     optional list of games weeks to exclude from scraping
 
     Returns
