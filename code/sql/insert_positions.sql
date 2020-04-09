@@ -1,0 +1,1 @@
+INSERT INTO fantasy.positions VALUES {} ON CONFLICT DO NOTHING

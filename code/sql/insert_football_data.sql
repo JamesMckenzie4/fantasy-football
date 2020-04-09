@@ -1,0 +1,1 @@
+INSERT INTO fantasy.football_data VALUES {} ON CONFLICT DO NOTHING
